@@ -32,9 +32,9 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
 
 
     })
-    .catch(function (errors) {
-        console.log(errors);
-    });
+.catch(function (errors) {
+    console.log(errors);
+});
 
 let createCard = function (card) {
     document.querySelector('.loading').style.display = 'none';

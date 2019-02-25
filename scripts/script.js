@@ -2,31 +2,16 @@
 // connect to this api https://api.magicthegathering.io/v1/cards
 
 
-let myCards = (function () {
-
+(function () {
     const cardContainer = document.querySelector('#cards');
     const loadingBar = document.querySelector('.loading');
     let isCreatingCards = false;
 
-    fetch('https://api.magicthegathering.io/v1/cards')
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function (json) {
-            createCards(json.cards);
-        })
-        .catch(function (errors) {
-            console.log(errors);
-            displayErrors(errors);
-        });
-
     let createCards = function (json) {
-
-        if (json.length > 0) {
-            // Found some cards with the criteria
+        if ( json.length > 0 ) { // Found some cards with the criteria
             for (let i = 0; i < json.length; i++) {
+                // Check if the card is missing anything
                 let card = json[i];
-
                 if ( card.imageUrl == null && card.variations != null ) {
                     let originalCard = json.find(function (findCard) { // fix the special card imageUrl by finding the original variant
                         return findCard.id === card.variations[0]; // Use the variation id to filter the cards
@@ -37,6 +22,7 @@ let myCards = (function () {
                     continue;
                 }
 
+                // Produce the html and add it to the DOM
                 let template = `
                         <div class="col-sm-4">
                             <div class="card-container">
@@ -46,27 +32,24 @@ let myCards = (function () {
                             </div>
                         </div>
                     `;
-                cardContainer.innerHTML += template; // Produce the html and add it to the DOM
+                cardContainer.innerHTML += template;
             }
             isCreatingCards = false;
             loadingBar.style.display = 'none';
-        } else {
-            // Didn't find anything with that criteria
+        } else { // Didn't find anything with that criteria
             displayErrors(['Nothing matches the given search query']);
         }
     };
 
     let searchQuery = function (event) {
-
         let value = document.querySelector('#search').value;
-        let key = event.key;
-
-        if ( !isCreatingCards && key === 'Enter' || key == null ) {
+        if ( !isCreatingCards && event.key === 'Enter' || event.button === 0 ) {
             let fetchUrl = null;
             isCreatingCards = true;
             loadingBar.style.display = 'block';
             cardContainer.innerHTML = '';
 
+            // Create url and fetch the data
             if ( isNaN(value) ) { // change the api url based on whether or not it's a number or string
                 fetchUrl = `https://api.magicthegathering.io/v1/cards?name=${value}`
             } else {
@@ -84,10 +67,10 @@ let myCards = (function () {
                     displayErrors(errors);
                 });
         }
-
     };
 
     let displayErrors = function (errors) {
+        // Produce the html and add it to the DOM
         for (let i = 0; i < errors.length; i++) {
             let template = `
                 <div class="col-sm-11">
@@ -96,7 +79,7 @@ let myCards = (function () {
                     </div>
                 </div>
             `;
-            cardContainer.innerHTML += template; // Produce the html and add it to the DOM
+            cardContainer.innerHTML += template;
         }
         isCreatingCards = false;
         loadingBar.style.display = 'none';
@@ -104,6 +87,13 @@ let myCards = (function () {
 
     document.querySelector('#search').addEventListener("keyup", searchQuery);
     document.querySelector('#searchButton').addEventListener("click", searchQuery);
+    document.querySelector('#searchButton').click(); // instead of redundant fetch function
 
+    // return {
+    //     searchQuery: searchQuery,
+    //     createCards: createCards
+    // }
 })();
+
+
 
