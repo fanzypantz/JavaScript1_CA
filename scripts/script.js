@@ -5,6 +5,7 @@
 let myCards = (function () {
 
     const cardContainer = document.querySelector('#cards');
+    const loadingBar = document.querySelector('.loading');
     let cardsObject = null;
     let isCreatingCards = false;
 
@@ -20,16 +21,18 @@ let myCards = (function () {
             console.log(errors);
         });
 
-    let createCards = function (cards) {
-        cardContainer.innerHTML = '';
-        for (let i = 0; i < cards.length; i++) {
-            let card = cards[i];
+    let createCards = function () {
+        for (let i = 0; i < cardsObject.length; i++) {
+            let card = cardsObject[i];
 
-            if (card.imageUrl == null) {
-                let originalCard = cards.find(function (findCard) { // fix the special card imageUrl by finding the original variant
-                    return findCard.id === card.variations[0]
+            if ( card.imageUrl == null && card.variations != null ) {
+                let originalCard = cardsObject.find(function (findCard) { // fix the special card imageUrl by finding the original variant
+                    return findCard.id === card.variations[0];
                 });
                 card.imageUrl = originalCard.imageUrl;
+            } else if ( card.imageUrl == null && card.variations == null ) {
+                delete cardsObject[card];
+                continue;
             }
 
             let template = `
@@ -44,6 +47,7 @@ let myCards = (function () {
             cardContainer.innerHTML += template;
         }
         isCreatingCards = false;
+        loadingBar.style.display = 'none';
     };
 
     let filterCards = function (searchQuery) {
@@ -53,15 +57,30 @@ let myCards = (function () {
         });
     };
 
-    let searchQuery = function () {
+    let searchQuery = function (event) {
         let value = document.querySelector('#search').value;
+        let key = event.key;
 
-        if ( !isCreatingCards ) {
+        if ( !isCreatingCards && key === 'Enter' || key == null ) {
             isCreatingCards = true;
-            let cards = filterCards(value);
+            loadingBar.style.display = 'block';
+            cardContainer.innerHTML = '';
+            // let cards = filterCards(value);
+            fetch(`https://api.magicthegathering.io/v1/cards?name=${value}`)
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function (json) {
+                    cardsObject = json.cards;
+                    createCards();
+                })
+                .catch(function (errors) {
+                    console.log(errors);
+                });
+
 
             // console.log(value, cards);
-            createCards(cards);
+            // createCards(cards);
         }
 
     };
@@ -69,9 +88,5 @@ let myCards = (function () {
     document.querySelector('#search').addEventListener("keyup", searchQuery);
     document.querySelector('#searchButton').addEventListener("click", searchQuery);
 
-    // return {
-    //     createCards: createCards,
-    //     filterCards: filterCards
-    // }
 })();
 

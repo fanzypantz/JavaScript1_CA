@@ -13,7 +13,6 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
     })
     .then(function (json) {
         let card = json.card;
-        console.log('Current card', card);
 
         if (card.imageUrl == null) { // fix the different structure with missing info by getting the normal card version
             fetch(`https://api.magicthegathering.io/v1/cards/${card.variations[0]}`)
@@ -21,7 +20,6 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
                     return response.json();
                 })
                 .then(function (json) {
-                    console.log('Fetched original card', json.card);
                     card.imageUrl = json.card.imageUrl;
                     createCard(card);
                 })
@@ -39,6 +37,7 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
     });
 
 let createCard = function (card) {
+    document.querySelector('.loading').style.display = 'none';
     document.querySelector('#card').innerHTML = `
         <div class="row">
             <div class="col-sm-3" id="cardImage">
@@ -48,10 +47,11 @@ let createCard = function (card) {
                 <h2>${card.name}</h2>
                 <div><b>About:  </b>${card.text}</div>
                 <div><b>Rarity: </b>${card.rarity}</div>
-                <div><b>Color: </b>${card.color}</div>
+                <div><b>Color: </b>${card.colors[0]}</div>
             </div>
         </div>
     `;
+
 };
 
 

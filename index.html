@@ -36,10 +36,17 @@
     </nav>
 </header>
 <section>
+
+    <div class="loading">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <form class="relative">
+                <form class="relative" onsubmit="event.preventDefault();">
                     <input type="text" name="search" id="search" placeholder="Search by name...">
                     <button id="searchButton" type="button">Search <i class="fa fa-search" aria-hidden="true"></i></button>
                 </form>
