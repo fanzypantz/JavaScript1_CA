@@ -6,7 +6,6 @@ let myCards = (function () {
 
     const cardContainer = document.querySelector('#cards');
     const loadingBar = document.querySelector('.loading');
-    let cardsObject = null;
     let isCreatingCards = false;
 
     fetch('https://api.magicthegathering.io/v1/cards')
@@ -14,24 +13,23 @@ let myCards = (function () {
             return response.json();
         })
         .then(function (json) {
-            cardsObject = json.cards;
-            createCards(cardsObject);
+            createCards(json.cards);
         })
         .catch(function (errors) {
             console.log(errors);
         });
 
-    let createCards = function () {
-        for (let i = 0; i < cardsObject.length; i++) {
-            let card = cardsObject[i];
+    let createCards = function (json) {
+        for (let i = 0; i < json.length; i++) {
+            let card = json[i];
 
             if ( card.imageUrl == null && card.variations != null ) {
-                let originalCard = cardsObject.find(function (findCard) { // fix the special card imageUrl by finding the original variant
+                let originalCard = json.find(function (findCard) { // fix the special card imageUrl by finding the original variant
                     return findCard.id === card.variations[0];
                 });
                 card.imageUrl = originalCard.imageUrl;
             } else if ( card.imageUrl == null && card.variations == null ) {
-                delete cardsObject[card];
+                delete json[card];
                 continue;
             }
 
@@ -50,13 +48,6 @@ let myCards = (function () {
         loadingBar.style.display = 'none';
     };
 
-    let filterCards = function (searchQuery) {
-        return cardsObject.filter(function (card) {
-            let name = card.name.toLowerCase();
-            return name.includes(searchQuery.toLowerCase());
-        });
-    };
-
     let searchQuery = function (event) {
         let value = document.querySelector('#search').value;
         let key = event.key;
@@ -65,22 +56,17 @@ let myCards = (function () {
             isCreatingCards = true;
             loadingBar.style.display = 'block';
             cardContainer.innerHTML = '';
-            // let cards = filterCards(value);
+
             fetch(`https://api.magicthegathering.io/v1/cards?name=${value}`)
                 .then(function(response) {
                     return response.json();
                 })
                 .then(function (json) {
-                    cardsObject = json.cards;
-                    createCards();
+                    createCards(json.cards);
                 })
                 .catch(function (errors) {
                     console.log(errors);
                 });
-
-
-            // console.log(value, cards);
-            // createCards(cards);
         }
 
     };
