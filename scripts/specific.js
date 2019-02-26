@@ -14,19 +14,27 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
     .then(function (json) {
         let card = json.card;
 
-        if (card.imageUrl == null) { // fix the different structure with missing info by getting the normal card version
+        if ( card.imageUrl == null && card.variations != null ) { // fix the different structure with missing info by getting the normal card version
             fetch(`https://api.magicthegathering.io/v1/cards/${card.variations[0]}`)
                 .then(function(response) {
                     return response.json();
                 })
                 .then(function (json) {
-                    card.imageUrl = json.card.imageUrl;
+                    if ( json.card.imageUrl ) {
+                        console.log('Got old card', json.card);
+                        card.imageUrl = json.card.imageUrl;
+                    } else {
+                        console.log("Didn't find old card");
+                        card.imageUrl = './images/placeholder.png';
+                    }
                     createCard(card);
                 })
                 .catch(function (errors) {
                     console.log(errors);
                 });
-        } else {
+        } else if ( card.imageUrl == null && card.variations == null ){
+            console.log("Didn't find old card or image");
+            card.imageUrl = './images/placeholder.png';
             createCard(card);
         }
 
@@ -50,7 +58,7 @@ let createCard = function (card) {
                 <div><b>Color: </b>${card.colors[0]}</div>
             </div>
         </div>
-    `;
+    `; // FIX TEXT INCASE THERE IS NO TEXT
 
 };
 
