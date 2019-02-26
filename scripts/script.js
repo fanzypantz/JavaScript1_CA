@@ -17,7 +17,7 @@
             for (let i = 0; i < json.length; i++) {
                 // Check if the card is missing anything
                 card = json[i];
-                if ( card.imageUrl == null && card.variations != null ) {
+                if ( !card.hasOwnProperty('imageUrl') && card.hasOwnProperty('variations') ) {
                     for (let j = 0; j < card.variations.length; j++) {
                         let originalCard = json.find(function (findCard) { // fix the special card imageUrl by finding the original variant
                             return findCard.id === card.variations[j]; // Use the variation id to filter the cards
@@ -29,11 +29,11 @@
                         }
                     }
                     // If there was no card with a imageUrl in variations insert placeholder
-                    if ( !card.imageUrl ) {
+                    if ( !card.hasOwnProperty('imageUrl' ) ) {
                         card.imageUrl = './images/placeholder.png';
                     }
 
-                } else if ( card.imageUrl == null && card.variations == null ) {
+                } else if ( !card.hasOwnProperty('imageUrl') && !card.hasOwnProperty('variations') ) {
                     card.imageUrl = './images/placeholder.png';
                 }
 
