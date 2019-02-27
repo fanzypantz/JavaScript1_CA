@@ -129,6 +129,7 @@ button{
 }
 
 img{
+    height: 449px;
     border-radius: 10px;
 }
 
@@ -189,5 +190,29 @@ h4{
     }
     40% {
         transform: scale(1);
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .card-image {
+        height: 356px;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .card-image {
+        height: 254px;
+    }
+
+    .card-container h4 {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .card-image {
+        height: auto;
     }
 }

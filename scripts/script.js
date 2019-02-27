@@ -11,6 +11,7 @@
     let createCards = function (json) {
         if ( json.length > 0 ) { // Found some cards with the criteria
             let card = {};
+            let originalCard = {};
             let innerHtml = ``;
             let template = ``;
 
@@ -19,7 +20,7 @@
                 card = json[i];
                 if ( !card.hasOwnProperty('imageUrl') && card.hasOwnProperty('variations') ) {
                     for (let j = 0; j < card.variations.length; j++) {
-                        let originalCard = json.find(function (findCard) { // fix the special card imageUrl by finding the original variant
+                        originalCard = json.find(function (findCard) { // fix the special card imageUrl by finding the original variant
                             return findCard.id === card.variations[j]; // Use the variation id to filter the cards
                         });
                         // Insert the placeholder card if the original card version has to image
@@ -42,7 +43,7 @@
                     <div class="col-sm-4">
                         <div class="card-container">
                             <h4>${card.number} - ${card.name}</h4>
-                            <img src="${card.imageUrl}" width="100%">
+                            <img class="card-image" src="${card.imageUrl}" width="100%">
                             <a href="card-specific.html?id=${card.id}" class="btn btn-success">View More</a>
                         </div>
                     </div>
@@ -61,7 +62,7 @@
     let searchQuery = function (event) {
         if ( !isCreatingCards && event.key === 'Enter' || event.button === 0 ) {
             // Remove cards and lock any new searches from coming trough, start search animation
-            let fetchUrl = null;
+            let fetchUrl = ``;
             let value = document.querySelector('#search').value;
             isCreatingCards = true;
             loadingBar.style.display = 'block';
