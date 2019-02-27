@@ -14,7 +14,10 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
     .then(function (json) {
         let card = json.card;
 
+        console.log('Fetched card', card);
         if ( !card.hasOwnProperty('imageUrl') && card.hasOwnProperty('variations') ) { // fix the different structure with missing info by getting the normal card version
+
+            console.log('Has no imageUrl');
             fetch(`https://api.magicthegathering.io/v1/cards/${card.variations[0]}`)
                 .then(function(response) {
                     return response.json();
@@ -27,18 +30,16 @@ fetch(`https://api.magicthegathering.io/v1/cards/${id}`)
                         console.log("Didn't find old card");
                         card.imageUrl = './images/placeholder.png';
                     }
-                    createCard(card);
                 })
                 .catch(function (errors) {
                     console.log(errors);
                 });
         } else if ( !card.hasOwnProperty('imageUrl') && !card.hasOwnProperty('variations') ){
+            console.log('Has no imageUrl or variations');
             console.log("Didn't find old card or image");
             card.imageUrl = './images/placeholder.png';
-            createCard(card);
         }
-
-
+        createCard(card);
     })
 .catch(function (errors) {
     console.log(errors);

@@ -129,8 +129,11 @@ button{
 }
 
 img{
-    height: 449px;
     border-radius: 10px;
+}
+
+.card-image {
+    height: 449px;
 }
 
 h1{
