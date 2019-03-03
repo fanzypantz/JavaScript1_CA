@@ -1,1 +1,60 @@
 // refer to question 4 before development starts for scope document
+
+// Assuming this is submitted by AJAX so no form needed(probably useful for validation).
+
+let validate = function (event) {
+    let inputFields = document.querySelectorAll('input');
+    let errors = [];
+    let pattern;
+
+    let checkPattern = function (regPattern, element) {
+        pattern = new RegExp(regPattern);
+        if (!pattern.test(element.value)) {
+            errors.push(element.id);
+        }
+    };
+
+    let toggleError = function(element) {
+        console.log(errors.includes(element));
+        if ( errors.includes(element)) {
+            document.querySelector('#'+ element + 'Error').style.display = 'block';
+        } else {
+            document.querySelector('#'+ element + 'Error').style.display = 'none';
+        }
+    };
+
+    let showErrors = function () {
+        inputFields.forEach(function (element) {
+
+            toggleError(element.id);
+        })
+    };
+
+    let submit = function () {
+        // some submit logic
+    };
+
+    inputFields.forEach(function (element) {
+        switch (element.id) {
+            case 'firstName':
+            case 'lastName':
+                checkPattern('^[a-zA-Z]+$', element);
+                break;
+            case 'phone':
+                checkPattern('\\d{3}[\\s\\-\\.]\\d{3}[\\s\\-\\.]\\d{3}', element);
+                break;
+            case 'email':
+                checkPattern('\\S+@\\S+\\.\\S+', element);
+                break;
+        }
+    });
+
+    showErrors();
+    if ( !errors.length ) {
+        console.log('Submitting to server');
+        submit();
+    }
+
+};
+
+document.querySelector('#submitContact').addEventListener('click', validate, true);

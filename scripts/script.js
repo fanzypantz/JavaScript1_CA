@@ -9,6 +9,7 @@ let myCards = (function () {
     let isCreatingCards = false;
     let jsonObject = {};
 
+    // Create the card HTML and append it to the DOM
     let createCards = function () {
         if ( jsonObject.length > 0 ) { // Found some cards with the criteria
             let card = {};
@@ -38,17 +39,21 @@ let myCards = (function () {
         }
     };
 
+    // Fix the card in question by searching the JSON object if anything is missing
     let fixCard = function (card) {
         let originalCard = {};
 
         if ( !card.hasOwnProperty('imageUrl') && card.hasOwnProperty('variations') ) {
-            for (let j = 0; j < card.variations.length; j++) {
-                originalCard = jsonObject.find(function (findCard) { // fix the special card imageUrl by finding the original variant
-                    return findCard.id === card.variations[j]; // Use the variation id to filter the cards
+            for (let i = 0; i < card.variations.length; i++) {
+                // fix the special card imageUrl by finding the original variant
+                originalCard = jsonObject.find(function (jsonCard) {
+                    // Use the variation id to filter the cards
+                    return jsonCard.id === card.variations[i];
                 });
                 // Insert the placeholder card if the original card version has image
                 if ( originalCard != null && originalCard.hasOwnProperty('imageUrl') ) {
                     card.imageUrl = originalCard.imageUrl;
+                    // Exit the for loop if a suitable card was found
                     break;
                 }
             }
@@ -58,12 +63,15 @@ let myCards = (function () {
             }
 
         } else if ( !card.hasOwnProperty('imageUrl') && !card.hasOwnProperty('variations') ) {
+            // If no variations at all insert placeholder
             card.imageUrl = './images/placeholder.png';
         }
         return card;
     };
 
+    // Handle the incoming events
     let searchQuery = function (event) {
+        // Start a search if enter is pressed or the search button clicked
         if ( !isCreatingCards && event.key === 'Enter' || event.button === 0 ) {
             // Remove cards and lock any new searches from coming trough, start search animation
             let value = document.querySelector('#search').value;
@@ -74,7 +82,9 @@ let myCards = (function () {
         }
     };
 
+    // Fetch and return cards from the MTG API
     let fetchCards = function (value) {
+        // Create a promise to deliver the data asynchronously
         return new Promise(function (resolve, reject) {
             let fetchUrl = ``;
 
@@ -97,14 +107,16 @@ let myCards = (function () {
 
     };
 
+    // Takes a string to begin a new search of the API
     let initCards = function (value) {
-        // Create url and fetch the data
+        // Fetch and wait for the data
         fetchCards(value).then(function (cardsArray) {
             jsonObject = cardsArray;
             createCards();
             isCreatingCards = false;
             loadingBar.style.display = 'none';
         }).catch(function (errors) {
+            // The API must have failed and sent us some error messages
             displayErrors(errors);
         });
     };
@@ -129,8 +141,9 @@ let myCards = (function () {
         loadingBar.style.display = 'none';
     };
 
-    document.querySelector('#search').addEventListener("keyup", searchQuery);
-    document.querySelector('#searchButton').addEventListener("click", searchQuery);
+    // Create event listeners for user input
+    document.querySelector('#search').addEventListener("keyup", searchQuery, false);
+    document.querySelector('#searchButton').addEventListener("click", searchQuery, false);
 
     return {
         initCards: initCards

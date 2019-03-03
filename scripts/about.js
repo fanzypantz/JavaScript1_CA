@@ -8,3 +8,6 @@ document.querySelector('#moreInfoTrigger').addEventListener("click", function ()
         text.style.display = 'none';
     }
 });
+
+let text = document.querySelector('#aboutText');
+text.innerHTML = text.innerHTML.replace(new RegExp('magic', 'gi'), 'Something');
