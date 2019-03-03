@@ -44,7 +44,8 @@ let validate = function () {
     });
 
     showErrors();
-    if ( !errors.length ) {
+
+    if ( errors.length === 0 ) {
         console.log('Submitting to server');
         submit();
     }

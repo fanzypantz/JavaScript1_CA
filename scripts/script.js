@@ -51,6 +51,8 @@ let myCards = (function () {
                     return jsonCard.id === card.variations[i];
                 });
                 // Insert the placeholder card if the original card version has image
+                // originalCard could potentially be null because it can't be found in this array and can be fixed by fetching
+                // the card again, but that could add a lot of requests and barely happen
                 if ( originalCard != null && originalCard.hasOwnProperty('imageUrl') ) {
                     card.imageUrl = originalCard.imageUrl;
                     // Exit the for loop if a suitable card was found
@@ -104,7 +106,6 @@ let myCards = (function () {
                     reject(errors);
                 });
         });
-
     };
 
     // Takes a string to begin a new search of the API
