@@ -2,7 +2,7 @@
 
 // Assuming this is submitted by AJAX so no form needed(probably useful for validation).
 
-let validate = function (event) {
+let validate = function () {
     let inputFields = document.querySelectorAll('input');
     let errors = [];
     let pattern;
@@ -14,19 +14,13 @@ let validate = function (event) {
         }
     };
 
-    let toggleError = function(element) {
-        console.log(errors.includes(element));
-        if ( errors.includes(element)) {
-            document.querySelector('#'+ element + 'Error').style.display = 'block';
-        } else {
-            document.querySelector('#'+ element + 'Error').style.display = 'none';
-        }
-    };
-
     let showErrors = function () {
         inputFields.forEach(function (element) {
-
-            toggleError(element.id);
+            if ( errors.includes(element.id)) {
+                document.querySelector('#'+ element.id + 'Error').style.display = 'block';
+            } else {
+                document.querySelector('#'+ element.id + 'Error').style.display = 'none';
+            }
         })
     };
 
