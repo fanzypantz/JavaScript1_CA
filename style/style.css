@@ -7,6 +7,10 @@ body{
      height: 100%
 }
 
+.container {
+    min-height: calc(100% - 233px);
+}
+
 header{
     padding: 10px;
     background-color: #3a99cd;
@@ -126,6 +130,19 @@ button{
 
 .col-sm-12{
     padding: 0px;
+}
+
+.col-sm-4:nth-of-type(3n+1) {
+    padding-left: 0;
+}
+
+.col-sm-4:nth-of-type(3n) {
+    padding-right: 0;
+}
+
+.col-sm-4:nth-of-type(3n+1) .card-container {
+    margin-left: 0;
+
 }
 
 img{
